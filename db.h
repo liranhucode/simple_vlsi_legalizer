@@ -3,7 +3,14 @@
 
 class Cell
 {
-
+private：
+    int id_;
+    string name_;
+    int width;
+    int height;
+    double init_x_;
+    double init_y_;
+    int ori_;
 };
 
 class Row
