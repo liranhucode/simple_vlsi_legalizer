@@ -41,7 +41,12 @@ public:
 
     void Print()
     {
-
+        std::cout << "num cells: " << num_cell_ << std::endl;
+        std::cout << "num fixed cells: " << num_fixed_cell_ << std::endl;
+        std::cout << "num rows: " << num_row_ << std::endl;
+        std::cout << "site width: " << site_width_ << std::endl;
+        std::cout << "site height: " << site_height_ << std::endl;
+        std::cout << "max_displacement: " << max_displacement_ << std::endl;
     }
 
     void Parser(std::string &filename);
@@ -52,6 +57,7 @@ public:
 private:
     std::vector<Cell> cells_;
     std::vector<Row> rows_;
+    int num_row_;
     int max_displacement_;
     int num_cell_;
     int num_fixed_cell_;
