@@ -4,7 +4,7 @@
 class Legalizer
 {
 public:
-    Legalizer(DB &db) {}
+    Legalizer(DB &db) : db_(db) {}
 
     void run();
 
@@ -13,5 +13,5 @@ public:
     void check_legal_placement();
 
 private:
-    DB &db;
+    DB &db_;
 };
