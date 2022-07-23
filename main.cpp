@@ -1,8 +1,13 @@
 #include "legal.h"
 
+
 void usage()
 {
+#ifndef DEBUG 
+    std::cout << "DEBUG: ./Legalizer test.aux" << std::endl;
+#else 
     std::cout << "./Legalizer test.aux" << std::endl;
+#endif
 }
 
 int main(int argc, char *argv[])
