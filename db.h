@@ -27,6 +27,11 @@ public:
 
 class Row
 {
+public:
+
+    int x_coord;
+    int y_coord;
+    int width;
 
 };
 

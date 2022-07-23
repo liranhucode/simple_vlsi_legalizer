@@ -152,6 +152,7 @@ void DB::ParserSCLFile(std::string &file_name)
         {
             std::stringstream word(buff);
             word >> buff >> buff >> num_row_;
+            rows_.resize(num_row_, Row());
         }
         else 
         {
@@ -162,6 +163,8 @@ void DB::ParserSCLFile(std::string &file_name)
             else if (n = buff.find("Coordinate") != std::string::npos)
             {
                 std::stringstream word(buff);
+                Row row;
+                word >> tmp >> tmp >> rows_[i].y_coord;
             }
             else if (n = buff.find("Height") != std::string::npos)
             {
@@ -186,10 +189,12 @@ void DB::ParserSCLFile(std::string &file_name)
             else if (n = buff.find("SubrowOrigin") != std::string::npos)
             {
                 std::stringstream word(buff);
+                word >> tmp >> tmp >> rows_[i].x_coord >> tmp >> tmp >> rows_[i].width;
             }
             else if (n = buff.find("End") != std::string::npos)
             {
                 std::stringstream word(buff);
+                i++;
             }
             else {
                 std::cout << buff << std::endl;
