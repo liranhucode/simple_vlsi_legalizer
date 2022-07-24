@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
+#include <assert.h>  
+#include <math.h>  
 
 
 class Cell
@@ -13,7 +15,8 @@ public:
     id(id),
     init_x(x),
     init_y(y),
-    ori(ori) {} 
+    ori(ori),
+    is_fixed(false) {} 
 
     std::string name;
     int id;
@@ -28,10 +31,14 @@ public:
 class Row
 {
 public:
-
     int x_coord;
     int y_coord;
     int width;
+    std::vector<Cell> fixed_cells;
+};
+
+class Subrow : public Row
+{
 
 };
 
@@ -39,6 +46,8 @@ public:
 class DB
 {
 public:
+    friend class Legalizer;
+
     DB(std::string &filename) {
         Parser(filename);
         Print();
@@ -54,10 +63,18 @@ public:
         std::cout << "max_displacement: " << max_displacement_ << std::endl;
     }
 
+
+
     void Parser(std::string &filename);
     void ParserLocationFile(std::string &file_name);
     void ParserSCLFile(std::string &file_name);
     void ParserCellFile(std::string &file_name);
+
+    std::vector<Cell> &GetCells() { return cells_; }
+    std::vector<Row> &GetRows() { return rows_; }
+    int GetSiteHeight() const { return site_height_; }
+    int GetSiteWidth() const { return site_width_; }
+    int GetNumFixedCell() const { return num_fixed_cell_; }
 
 private:
     std::vector<Cell> cells_;

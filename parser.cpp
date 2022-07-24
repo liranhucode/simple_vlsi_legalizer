@@ -78,9 +78,9 @@ void DB::ParserCellFile(std::string &file_name)
         {
             std::stringstream word(buff);
             word >> tmp >> cells_[i].width >> cells_[i].height;
-            if (i > num_cell_ - num_fixed_cell_)
+            if (i >= num_cell_ - num_fixed_cell_)
             {
-                word >> cells_[i].is_fixed;
+                cells_[i].is_fixed = true;
             }
             i++;
         }
@@ -169,6 +169,7 @@ void DB::ParserSCLFile(std::string &file_name)
             else if (n = buff.find("Height") != std::string::npos)
             {
                 std::stringstream word(buff);
+                word >> tmp >> tmp >> site_height_;
             }
             else if (n = buff.find("Sitewidth") != std::string::npos)
             {

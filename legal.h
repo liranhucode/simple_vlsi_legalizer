@@ -12,6 +12,7 @@ public:
 
     void check_legal_placement();
 
+    void AssignFixedCellToCloestRow();
 private:
     DB &db_;
 };
