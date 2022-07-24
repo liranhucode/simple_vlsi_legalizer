@@ -33,6 +33,9 @@
         "cmath": "cpp",
         "chrono": "cpp",
         "ctime": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "algorithm": "cpp",
+        "deque": "cpp",
+        "string": "cpp"
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "db.h"
-#include "timer.h"
 
 
 class Legalizer
@@ -16,6 +15,8 @@ public:
     void report();
 
     void check_legal_placement();
+    
+    int findClosestRowForCell(int cell_id);
 
 private:
     DB &db_;
