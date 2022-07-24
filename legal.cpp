@@ -21,6 +21,7 @@ void Legalizer::run()
             {
                 //InsertNodeToSubRow(i, j);
             }
+
             if (best_cost != INT_MAX){
                 break;
             } 
