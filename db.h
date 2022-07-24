@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <assert.h>  
 #include <math.h>  
+#include "utility.h"
 
+extern Legal_option legal_option;
 
 class Cell
 {
@@ -64,7 +66,9 @@ public:
     }
 
 
-
+    void Init();
+    void InitFixedCellToRow();
+    void CreateSubRow();
     void Parser(std::string &filename);
     void ParserLocationFile(std::string &file_name);
     void ParserSCLFile(std::string &file_name);
@@ -75,10 +79,13 @@ public:
     int GetSiteHeight() const { return site_height_; }
     int GetSiteWidth() const { return site_width_; }
     int GetNumFixedCell() const { return num_fixed_cell_; }
+    int GetNumRow() const { return num_row_; }
+
 
 private:
     std::vector<Cell> cells_;
     std::vector<Row> rows_;
+    std::vector<Row> subrows_;
     int num_row_;
     int max_displacement_;
     int num_cell_;

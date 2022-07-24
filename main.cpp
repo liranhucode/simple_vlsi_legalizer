@@ -1,5 +1,6 @@
 #include "legal.h"
 
+Legal_option legal_option;
 
 void usage()
 {

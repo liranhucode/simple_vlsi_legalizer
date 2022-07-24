@@ -104,7 +104,6 @@ void DB::ParserLocationFile(std::string &file_name)
     double x = 0, y = 0;
     std::string ori = "";
     int n = 0;
-    std::stringstream word;
     while (getline(fin, buff))
 	{
         if (buff.empty() || (n = buff.find('#')) != std::string::npos || 
@@ -113,7 +112,7 @@ void DB::ParserLocationFile(std::string &file_name)
             continue;
         } 
         //std::cout << buff << std::endl;
-        word.clear();
+        std::stringstream word;
         word << buff;
         word >> name >> x >> y >> tmp >> ori;
         Cell cell(name, i, x, y, ori);

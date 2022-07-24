@@ -2,10 +2,14 @@
 #include "db.h"
 #include "timer.h"
 
+
 class Legalizer
 {
 public:
-    Legalizer(DB &db) : db_(db) {}
+    Legalizer(DB &db) : db_(db)
+    {
+        db_.Init();
+    }
 
     void run();
 
@@ -13,7 +17,6 @@ public:
 
     void check_legal_placement();
 
-    void AssignFixedCellToCloestRow();
 private:
     DB &db_;
 };
