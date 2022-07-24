@@ -5,12 +5,12 @@
  
 class Timer {
 public:
-    Timer() : _name("Time elapsed:")
+    Timer() : label_("Time elapsed:")
     {
         restart();
     }
 
-    explicit Timer(const std::string &name) : _name(name + ":")
+    explicit Timer(const std::string &label) : label_(label+ ":")
     {
         restart();
     }
@@ -20,27 +20,27 @@ public:
         restart();
     }
 
-    inline void Restart(const std::string &name)
+    inline void Restart(const std::string &label)
     {
-        _name = name + ":";
+        label_ = label + ":";
         restart();
     }
 
-    void Report(const std::string &message = "", bool is_ms = true)
+    void Report(const std::string &label = "", bool is_ms = true)
     {
         if (is_ms)
         {
-            if (message.length() > 0)
-                std::cout << message + ":" << elapsed() << "ms" << std::endl;
+            if (label.empty())
+                std::cout << label_ << elapsed() << "ms" << std::endl;
             else
-                std::cout << _name << elapsed() << "ms" << std::endl;
+                std::cout << label + ":" << elapsed() << "ms" << std::endl;
         }
         else
         {
-            if (message.length() > 0)
-                std::cout << message + ":" << elapsed() / 1000.0 << "s" << std::endl;
+            if (label.empty())
+                std::cout << label_ << elapsed() / 1000.0 << "s" << std::endl;
             else
-                std::cout << _name << elapsed() / 1000.0 << "s" << std::endl;
+                std::cout << label + ":" << elapsed() / 1000.0 << "s" << std::endl;
         }
     }
  
@@ -60,5 +60,5 @@ private:
 private:
     std::chrono::steady_clock::time_point start_time_;
     std::chrono::steady_clock::time_point end_time_;
-    std::string _name;
+    std::string label_;
 };  
