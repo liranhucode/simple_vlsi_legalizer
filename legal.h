@@ -1,10 +1,11 @@
 #pragma once
 #include "db.h"
+#include "timer.h"
 
 class Legalizer
 {
 public:
-    Legalizer(DB &db) {}
+    Legalizer(DB &db) : db_(db) {}
 
     void run();
 
@@ -12,6 +13,7 @@ public:
 
     void check_legal_placement();
 
+    void AssignFixedCellToCloestRow();
 private:
-    DB &db;
+    DB &db_;
 };
