@@ -31,7 +31,7 @@ void DB::Parser(std::string &file_name)
     std::getline(fin, line);
     word << line;
     word >> tmp >> tmp >> max_displacement_;
-    std::cout << max_displacement_ << std::endl;
+    //std::cout << max_displacement_ << std::endl;
 
     ParserLocationFile(gp_file);
     ParserCellFile(cell_file);

@@ -1,5 +1,6 @@
 #pragma once
 #include "db.h"
+#include "timer.h"
 
 class Legalizer
 {

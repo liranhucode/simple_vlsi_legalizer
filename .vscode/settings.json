@@ -30,6 +30,9 @@
         "utility": "cpp",
         "typeinfo": "cpp",
         "cstddef": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "chrono": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp"
     }
 }
