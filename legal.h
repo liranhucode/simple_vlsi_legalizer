@@ -10,16 +10,19 @@ public:
         db_.Init();
     }
 
-    void run();
-    void report();
-    void check_legal_placement();
-    int findClosestRowForCellInsertCellToSubRow(int cell_id);
-    bool InsertCellToSubRow(int cell_id, int row_id, int subrow_id);
-    bool isFitSubRow(int cell_id, int row_id, int subrow_id);
-    void PlaceRow(int row_id, int subrow_id);
-    void Clapse(int row_id, int subrow_id);
-    double CalculateDisp(int rid, int j);
-    void disp(int cell_id, int new_x, int new_y);
+    void Run();
+    void Report();
+    void Check_legal_placement();
+
+private:
+    int findClosestRowForCell(const Cell &cell);
+    bool insertCellToSubRow(SubRow &subrow, const Cell &cell);
+    void placeRow(SubRow &subrow);
+    void collapse(SubRow &subrow);
+    bool isFitSubRow(const SubRow &subrow, const Cell &cell);
+    double calculateSubRowDisp(const SubRow &subrow);
+    void updateSubRowCellLocation(SubRow &subrow);
+    double disp(const Cell &cell, int new_x, int new_y);
 
 private:
     DB &db_;
