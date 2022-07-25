@@ -47,6 +47,7 @@ void DB::CreateSubRow()
             SubRow row;
             row.x_coord = rows_[i].x_coord;
             row.y_coord = rows_[i].y_coord;
+            row.width = rows_[i].width;
             subrows_[i].push_back(row);
         } 
         else 
@@ -65,7 +66,7 @@ void DB::CreateSubRow()
                     SubRow row;
                     row.x_coord = start_x;
                     row.y_coord = rows_[i].y_coord;
-                    row.width = rows_[i].y_coord - start_x;
+                    row.width = rows_[i].fixed_cells[j].init_x  - start_x;
                     subrows_[i].push_back(row);
                 }
             }
@@ -94,17 +95,4 @@ void DB::SortFixedCell(int rid)
     sort(rows_[rid].fixed_cells.begin(),rows_[rid].fixed_cells.end(), [] (const Cell &a, const Cell &b) -> bool {
         return a.init_x < b.init_x;
     });
-}
-
-int DB::FindClosestRowForCell(int id)
-{
-    int r = round(cells_[id].init_y / site_height_);
-    if (legal_option.is_debug)
-    {
-        std::cout << "cell: " << cells_[id].name << " ";
-        std::cout << "coord:" << cells_[id].init_x << " " << cells_[id].init_y << " ";
-        std::cout << "nearest row: " << r << std::endl;
-    }
-
-    return r;
 }

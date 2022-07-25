@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     timer.Restart("Legalize design");
     Legalizer legal(db);
     legal.Run();
-    legal.Report();
+    //legal.Report();
     timer.Report();
     return 0;
 }

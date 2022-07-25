@@ -110,6 +110,8 @@ public:
     int GetNumFixedCell() const { return num_fixed_cell_; }
     int GetNumCell() const { return num_cell_; }
     int GetNumRow() const { return num_row_; }
+    int GetOriginX() const { return origin_x_; }
+    int GetOriginY() const { return origin_y_; }
     std::vector<std::vector<SubRow>> &GetSubRow() { return subrows_; }
     std::vector<SubRow> &GetSubRow(int rid) { return subrows_[rid]; }
 
@@ -123,5 +125,7 @@ private:
     int num_fixed_cell_;
     int site_width_;
     int site_height_;
+    int origin_x_;
+    int origin_y_;
 
 };

@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/legalizer",
-            "args": ["benchmark/adaptec1/adaptec1.aux"],
+            "args": ["benchmark/ibm01/ibm01-cu85.aux"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

@@ -1,7 +1,6 @@
 #pragma once
 #include "db.h"
 
-
 class Legalizer
 {
 public:
@@ -15,13 +14,14 @@ public:
 
 private:
     int findClosestRowForCell(const Cell &cell);
-    bool insertCellToSubRow(SubRow &subrow, const Cell &cell);
+    bool insertCellToSubRow(SubRow &subrow, Cell &cell);
     void placeRow(SubRow &subrow);
     void collapse(SubRow &subrow);
     bool isFitSubRow(const SubRow &subrow, const Cell &cell);
     double calculateSubRowDisp(const SubRow &subrow);
-    void updateSubRowCellLocation(SubRow &subrow);
-    double disp(const Cell &cell, int new_x, int new_y);
+    void updateSubRowCostAndCellLocation(SubRow &subrow);
+    void updateFinialLocation();
+    double disp(const Cell &cell, double new_x, double new_y);
     bool check_legal_placement();
 
 private:

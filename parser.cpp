@@ -33,9 +33,9 @@ void DB::Parser(std::string &file_name)
     word >> tmp >> tmp >> max_displacement_;
     //std::cout << max_displacement_ << std::endl;
 
+    ParserSCLFile(scl_file);
     ParserLocationFile(gp_file);
     ParserCellFile(cell_file);
-    ParserSCLFile(scl_file);
 }
 
 void DB::ParserCellFile(std::string &file_name)
@@ -173,6 +173,7 @@ void DB::ParserSCLFile(std::string &file_name)
             else if (n = buff.find("Sitewidth") != std::string::npos)
             {
                 std::stringstream word(buff);
+                word >> tmp >> tmp >> site_width_;
             }
             else if (n = buff.find("Sitespacing") != std::string::npos)
             {
@@ -190,6 +191,7 @@ void DB::ParserSCLFile(std::string &file_name)
             {
                 std::stringstream word(buff);
                 word >> tmp >> tmp >> rows_[i].x_coord >> tmp >> tmp >> rows_[i].width;
+                rows_[i].width *= site_width_;
             }
             else if (n = buff.find("End") != std::string::npos)
             {
@@ -201,5 +203,11 @@ void DB::ParserSCLFile(std::string &file_name)
                 exit(1);
             }
         }
+    }
+
+    if (!rows_.empty())
+    {
+        origin_y_ = rows_[0].y_coord;
+        origin_x_ = rows_[0].x_coord;
     }
 }
