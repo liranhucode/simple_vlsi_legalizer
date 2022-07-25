@@ -14,7 +14,6 @@ void Legalizer::run()
         int best_subrow = -1;
 
         int start_row = findClosestRowForCell(i);
-
         //up
         for (int rid = start_row; rid < db_.GetNumRow(); ++rid)
         {
@@ -44,6 +43,7 @@ void Legalizer::run()
         //down 
         for (int rid = start_row; rid >= 0; --rid)
         {
+            bool is_smaller = false;
             for (int j = 0; j < subrow.size(); ++j)
             {
                 SubRow tmp = subrow[j];
@@ -56,10 +56,33 @@ void Legalizer::run()
                         best_cost = cost;
                         best_row = rid;
                         best_subrow = j;
-                    }
+                    } 
+                    else
+                    {
+                        is_smaller = true;
+                    } 
                 }
                 subrow[j] = tmp;
+                if (is_smaller = true)
+                {
+                    break;
+                }
             }
+            if (is_smaller = true)
+            {
+                break;
+            }
+        }
+        if (best_row != -1 && best_subrow != -1)
+        {
+            if (InsertCellToSubRow(i, rid, j))
+            {
+                placeRow(db_.GetSubRow()[rid][j]);
+            }
+        }
+        else
+        {
+            std::cout << "Can not find location for cell: " << cells[i].name << std::endl;
         }
     }
 }
