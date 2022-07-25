@@ -7,11 +7,12 @@ void Legalizer::Run()
     std::vector<Cell> &cells = db_.GetCells();
     for (int i = 0; i < num_movable_cell; ++i)
     {
-
         int best_cost = INT_MAX;
         int best_row = -1;
         int best_subrow = -1;
 
+        //TO DO : 
+        // Find closest subrow to speeding up.
         int start_row = findClosestRowForCell(i);
         //up
         for (int rid = start_row; rid < db_.GetNumRow(); ++rid)
