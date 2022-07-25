@@ -1,7 +1,6 @@
 #include "legal.h"
 
-
-void Legalizer::run()
+void Legalizer::Run()
 {
     int num_movable_cell = db_.GetNumCell() - db_.GetNumFixedCell();
 
@@ -75,7 +74,7 @@ void Legalizer::run()
         }
         if (best_row != -1 && best_subrow != -1)
         {
-            if (InsertCellToSubRow(i, rid, j))
+            if (InsertCellToSubRow(db_.GetSubRow()[rid][j], cells[i]))
             {
                 placeRow(db_.GetSubRow()[rid][j]);
             }
@@ -271,9 +270,8 @@ void Legalizer::check_legal_placement()
 
 }
 
-void Legalizer::report()
+void Legalizer::Report()
 {
-
 
 
 }

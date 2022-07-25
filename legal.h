@@ -12,7 +12,6 @@ public:
 
     void Run();
     void Report();
-    void Check_legal_placement();
 
 private:
     int findClosestRowForCell(const Cell &cell);
@@ -23,6 +22,7 @@ private:
     double calculateSubRowDisp(const SubRow &subrow);
     void updateSubRowCellLocation(SubRow &subrow);
     double disp(const Cell &cell, int new_x, int new_y);
+    void Check_legal_placement();
 
 private:
     DB &db_;
