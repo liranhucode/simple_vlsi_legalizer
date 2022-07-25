@@ -84,6 +84,11 @@ void Legalizer::Run()
             std::cout << "Can not find location for cell: " << cells[i].name << std::endl;
         }
     }
+
+    if (!check_legal_placement())
+    {
+        std::cout << "Check placement failed" << std::endl;
+    }
 }
 
 void Legalizer::placeRow(SubRow &subrow, Cell &cell)
@@ -265,9 +270,21 @@ double Legalizer::disp(Cell &cell, int new_x, int new_y)
     return sqrt(delta_x * delta_x + delta_y + delta_y);
 }
 
-void Legalizer::check_legal_placement()
+bool Legalizer::check_legal_placement()
 {
+    for (const auto &cell : db_.GetCells())
+    {
+        if (cell.is_fixed)
+        {
+            continue;
+        }
 
+        if (fmod(cell.new_x, db_.GetSiteWidth()) || fmod(cell.new_y, db_GetSiteHeight()))
+        {
+            std::cout << "Cell has illegal location: " << cell.name << " " << cell.new_x << " " << cell.new_y << std::endl;
+        }
+    }
+    return true;
 }
 
 void Legalizer::Report()

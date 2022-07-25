@@ -97,7 +97,6 @@ public:
     void InitFixedCellToRow();
     void CreateSubRow();
     void SortFixedCell(int rid);
-    int FindClosestRowForCell(int id);
 
     void Parser(std::string &filename);
     void ParserLocationFile(std::string &file_name);

@@ -22,7 +22,7 @@ private:
     double calculateSubRowDisp(const SubRow &subrow);
     void updateSubRowCellLocation(SubRow &subrow);
     double disp(const Cell &cell, int new_x, int new_y);
-    void Check_legal_placement();
+    bool check_legal_placement();
 
 private:
     DB &db_;
