@@ -34,6 +34,8 @@ public:
     int height;
     double init_x;
     double init_y;
+    double new_x;
+    double new_y;
     std::string ori;
     bool is_fixed;
 };
