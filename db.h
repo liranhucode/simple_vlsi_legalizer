@@ -14,19 +14,19 @@
 #include "timer.h"
 
 extern Legal_option legal_option;
+class Legalizer;
 
 class Cell
 {
 public:
     Cell() {}
-    Cell(std::string name, int id, double x, double y, std::string ori) : name(name),
-                                                                          id(id),
-                                                                          init_x(x),
-                                                                          init_y(y),
-                                                                          ori(ori),
-                                                                          is_fixed(false)
-    {
-    }
+    Cell(std::string name, int id, double x, double y, std::string ori)
+        : name(name),
+          id(id),
+          init_x(x),
+          init_y(y),
+          ori(ori),
+          is_fixed(false) {}
 
     std::string name;
     int id;
@@ -48,6 +48,15 @@ public:
 };
 
 
+class Cluster
+{
+public:
+    int start_x;
+    int total_width;
+    double total_cost;
+    std::vector<Cell> cells;
+};
+
 class SubRow
 {
 public: 
@@ -55,8 +64,10 @@ public:
     int x_coord;
     int y_coord;
     int width;
-    Cell temp;
+    Cell trial;
+    std::vector<Cluster> clusters;
 };
+
 
 
 class DB
