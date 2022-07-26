@@ -25,8 +25,13 @@ void Legalizer::updateFinialLocation()
 void Legalizer::Run()
 {
     int num_movable_cell = db_.GetNumCell() - db_.GetNumFixedCell();
-
+    int num_row = db_.GetNumRow();
     std::vector<Cell> &cells = db_.GetCells();
+    std::vector<std::vector<SubRow>> &subrow = db_.GetSubRow();
+
+    sort(cells.begin(), cells.end(), [](const cell &a, const cell &b) -> bool
+         { return a.init_x < b.init_x; });
+
     for (int i = 0; i < num_movable_cell; ++i)
     {
         double best_cost = INT_MAX;
@@ -37,16 +42,15 @@ void Legalizer::Run()
         // Find closest subrow to speeding up.
         int start_row = findClosestRowForCell(cells[i]);
         //up
-        for (int rid = start_row; rid < db_.GetNumRow(); ++rid)
+        for (int rid = start_row; rid < num_row; ++rid)
         {
-            std::vector<SubRow> &subrow = db_.GetSubRow(rid);
-            for (int j = 0; j < subrow.size(); ++j)
+            for (int j = 0; j < subrow[rid].size(); ++j)
             {
-                SubRow tmp = subrow[j];
-                if (insertCellToSubRow(subrow[j], cells[i]))
+                SubRow tmp = subrow[rid][j];
+                if (insertCellToSubRow(subrow[rid][j], cells[i]))
                 {
-                    placeRow(subrow[j]);
-                    double cost = calculateSubRowDisp(subrow[j]);
+                    placeRow(subrow[rid][j]);
+                    double cost = calculateSubRowDisp(subrow[j][rid]);
                     if (cost < best_cost)
                     {
                         best_cost = cost;
@@ -54,7 +58,7 @@ void Legalizer::Run()
                         best_subrow = j;
                     }
                 }
-                subrow[j] = tmp;
+                subrow[rid][j] = tmp;
             }
 
             if (best_cost != INT_MAX)
@@ -65,15 +69,14 @@ void Legalizer::Run()
         //down 
         for (int rid = start_row - 1; rid >= 0; --rid)
         {
-            std::vector<SubRow> &subrow = db_.GetSubRow(rid);
-            int is_smaller = 0;
-            for (int j = 0; j < subrow.size(); ++j)
+            bool is_smaller = false;
+            for (int j = 0; j < subrow[rid].size(); ++j)
             {
-                SubRow tmp = subrow[j];
-                if (insertCellToSubRow(subrow[j], cells[i]))
+                SubRow tmp = subrow[rid][j];
+                if (insertCellToSubRow(subrow[rid][j], cells[i]))
                 {
-                    placeRow(subrow[j]);
-                    double cost = calculateSubRowDisp(subrow[j]);
+                    placeRow(subrow[rid][j]);
+                    double cost = calculateSubRowDisp(subrow[rid][j]);
                     if (cost < best_cost)
                     {
                         best_cost = cost;
@@ -82,25 +85,28 @@ void Legalizer::Run()
                     } 
                     else
                     {
-                        is_smaller++;
+                        is_smaller = true;
                     } 
                 }
-                subrow[j] = tmp;
-                if (is_smaller > 33)
+
+                subrow[rid][j] = tmp;
+                if (is_smaller)
                 {
                     break;
                 }
             }
-            if (is_smaller > 33)
+            if (is_smaller)
             {
                 break;
             }
         }
+
+        //place cell at best row
         if (best_row != -1 && best_subrow != -1)
         {
-            if (insertCellToSubRow(db_.GetSubRow()[best_row][best_subrow], cells[i]))
+            if (insertCellToSubRow(subrow[best_row][best_subrow], cells[i]))
             {
-                placeRow(db_.GetSubRow()[best_row][best_subrow]);
+                placeRow(subrow[best_row][best_subrow]);
             }
         }
         else
@@ -122,11 +128,11 @@ void Legalizer::placeRow(SubRow &subrow)
     if (subrow.clusters.empty())
     {
         Cluster new_c;
-        if (subrow.trial.init_x < subrow.x_coord)
+        if (subrow.trial.init_x < subrow.x_coord) //left
         {
             new_c.start_x = subrow.x_coord;
         }
-        else if (subrow.trial.init_x + subrow.trial.width   > subrow.x_coord + subrow.width )
+        else if (subrow.trial.init_x + subrow.trial.width   > subrow.x_coord + subrow.width ) //right
         {
             new_c.start_x = subrow.x_coord + subrow.width  - subrow.trial.width ;
         }
@@ -147,22 +153,23 @@ void Legalizer::placeRow(SubRow &subrow)
     {
         int last_index = subrow.clusters.size() - 1;
         Cluster &last_c = subrow.clusters[last_index];
-        //has overlap with last clsuter
+
+        //has overlap with last clsuter, placed in it
         if (subrow.trial.new_x < last_c.start_x + last_c.total_width)
         {
             last_c.cells.push_back(subrow.trial);
-            last_c.total_cost += disp(subrow.trial, last_c.start_x + last_c.total_width , subrow.y_coord);
+            //last_c.total_cost += disp(subrow.trial, last_c.start_x + last_c.total_width , subrow.y_coord);
             last_c.total_width += subrow.trial.width;
             collapse(subrow);
         }
         else
         {
             Cluster new_c;
-            if (subrow.trial.init_x < subrow.x_coord)
+            if (subrow.trial.init_x < subrow.x_coord) //might be removed
             {
                 new_c.start_x = subrow.x_coord;
             }
-            else if (subrow.trial.init_x + subrow.trial.width > subrow.x_coord + subrow.width)
+            else if (subrow.trial.init_x + subrow.trial.width > subrow.x_coord + subrow.width) //exceed right boundary
             {
                 new_c.start_x = subrow.x_coord + subrow.width - subrow.trial.width ;
             }
@@ -191,6 +198,7 @@ void Legalizer::collapse(SubRow &subrow)
         subrow.clusters[last_index].start_x = subrow.x_coord;
     }
 
+    //exceed right boundary, shift to left
     if (subrow.clusters[last_index].start_x + subrow.clusters[last_index].total_width > subrow.x_coord + subrow.width)
     {
         subrow.clusters[last_index].start_x = subrow.x_coord + subrow.width - subrow.clusters[last_index].total_width;
