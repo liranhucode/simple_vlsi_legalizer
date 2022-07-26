@@ -29,10 +29,11 @@ void Legalizer::Run()
     std::vector<Cell> &cells = db_.GetCells();
     std::vector<std::vector<SubRow>> &subrow = db_.GetSubRow();
 
-    sort(cells.begin(), cells.end(), [](const cell &a, const cell &b) -> bool
+    sort(cells.begin(), cells.end(), [](const Cell &a, const Cell &b) -> bool
          { return a.init_x < b.init_x; });
 
     for (int i = 0; i < num_movable_cell; ++i)
+    //for (int i = 0; i < 10; ++i)
     {
         double best_cost = INT_MAX;
         int best_row = -1;
@@ -50,7 +51,7 @@ void Legalizer::Run()
                 if (insertCellToSubRow(subrow[rid][j], cells[i]))
                 {
                     placeRow(subrow[rid][j]);
-                    double cost = calculateSubRowDisp(subrow[j][rid]);
+                    double cost = calculateSubRowDisp(subrow[rid][j]);
                     if (cost < best_cost)
                     {
                         best_cost = cost;
@@ -107,6 +108,26 @@ void Legalizer::Run()
             if (insertCellToSubRow(subrow[best_row][best_subrow], cells[i]))
             {
                 placeRow(subrow[best_row][best_subrow]);
+
+                if (legal_option.is_debug)
+                {
+                    //std::cout << "#" << i << " cell name:" << std::setw(6) << cells[i].name << " ";
+                    //std::cout << " init_x:" << std::setw(8) << cells[i].init_x << " init_y:" << std::setw(8) << cells[i].init_y << " -> "
+                    //          << " new_x:" << std::setw(8) << cells[i].new_x << " new_y:" << std::setw(8) << cells[i].new_y << std::endl;
+
+                    for (auto &cluster : subrow[best_row][best_subrow].clusters)
+                    {
+                        for (const auto &cell : cluster.cells)
+                        {
+                            if (legal_option.is_debug)
+                            {
+                                std::cout << "[PlaceRow] #" << i++ << " cell name:" << std::setw(6) << cell.name << " ";
+                                std::cout << " init_x:" << std::setw(8) << cell.init_x << " init_y:" << std::setw(8) << cell.init_y << " -> "
+                                          << " new_x:" << std::setw(8) << cell.new_x << " new_y:" << std::setw(8) << cell.new_y << std::endl;
+                            }
+                        }
+                    }
+                }
             }
         }
         else
@@ -306,11 +327,37 @@ double Legalizer::disp(const Cell &cell, double new_x, double new_y)
 {
     double delta_x = cell.init_x - new_x;
     double delta_y = cell.init_y - new_y;
-    return sqrt(delta_x * delta_x + delta_y + delta_y);
+    return sqrt(delta_x * delta_x + delta_y * delta_y);
 }
 
 bool Legalizer::check_legal_placement()
 {
+    for (int i = 0; i < db_.GetNumRow(); ++i)
+    {
+        for (auto &subrow : db_.GetSubRow()[i])
+        {
+            for (auto &cluster : subrow.clusters)
+            {
+                for (const auto &cell : cluster.cells)
+                {
+                    if (cell.is_fixed)
+                    {
+                        continue;
+                    }
+
+                    if (fmod(cell.new_x - db_.GetOriginX(), db_.GetSiteWidth()) || fmod(cell.new_y - db_.GetOriginY(), db_.GetSiteHeight()))
+                    {
+                        std::cout << "Cell has illegal location: " << cell.name << " " << cell.new_x << " " << cell.new_y << std::endl;
+                        //return false;
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+
+    /*
     for (const auto &cell : db_.GetCells())
     {
         if (cell.is_fixed)
@@ -325,19 +372,42 @@ bool Legalizer::check_legal_placement()
         }
     }
     return true;
+    */
 }
 
 void Legalizer::Report()
 {
+    int n = 0;
+    for (int i = 0; i < db_.GetNumRow(); ++i)
+    {
+        for (auto & subrow : db_.GetSubRow()[i])
+        {
+            for (auto & cluster : subrow.clusters)
+            {
+                for (const auto &cell : cluster.cells)
+                {
+                    if (legal_option.is_debug)
+                    {
+                        std::cout << "[Final] #" << n++ << " cell name:" << std::setw(6) << cell.name << " ";
+                        std::cout << " init_x:" << std::setw(8) << cell.init_x << " init_y:" << std::setw(8) << cell.init_y << " -> "
+                                  << " new_x:" << std::setw(8) << cell.new_x << " new_y:" << std::setw(8) << cell.new_y << std::endl;
+                    }
+                }
+            }
+        }
+    }
+
+/*
     const std::vector<Cell> &cells = db_.GetCells();
     for (int i = 0; i < db_.GetNumCell(); ++i)
     {
         if (legal_option.is_debug)
         {
-            std::cout << "cell id: " << cells[i].id << " name:" << cells[i].name << " ";
-            std::cout << " init x:" << cells[i].init_x << " y:" << cells[i].init_y << " -> "
-                      << " new x:" << cells[i].new_x << " y:" << cells[i].new_y << std::endl;
+            std::cout << "#" << i << " cell name:" << std::setw(6) << cells[i].name << " ";
+            std::cout << " init_x:" << std::setw(8) << cells[i].init_x << " init_y:" << std::setw(8) << cells[i].init_y << " -> "
+                      << " new_x:" << std::setw(8) << cells[i].new_x << " new_y:" << std::setw(8) << cells[i].new_y << std::endl;
         }
     }
+    */
 }
 

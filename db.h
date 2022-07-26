@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <climits>
+#include <iomanip>
 
 #include <stdlib.h>
 #include <assert.h>  
@@ -89,6 +90,8 @@ public:
         std::cout << "num rows: " << num_row_ << std::endl;
         std::cout << "site width: " << site_width_ << std::endl;
         std::cout << "site height: " << site_height_ << std::endl;
+        std::cout << "origin X: " << origin_x_ << std::endl;
+        std::cout << "origin Y: " << origin_y_<< std::endl;
         std::cout << "max_displacement: " << max_displacement_ << std::endl;
     }
 
