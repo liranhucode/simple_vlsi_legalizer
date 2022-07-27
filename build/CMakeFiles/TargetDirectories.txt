@@ -1,3 +1,0 @@
-/home/lrhu/Project/simple_vlsi_legalizer/build/CMakeFiles/rebuild_cache.dir
-/home/lrhu/Project/simple_vlsi_legalizer/build/CMakeFiles/Legalizer.dir
-/home/lrhu/Project/simple_vlsi_legalizer/build/CMakeFiles/edit_cache.dir

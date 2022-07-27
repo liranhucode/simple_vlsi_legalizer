@@ -1,5 +1,5 @@
 legalizer
 *.swp
-build/
 .*
 testcase
+vscode
