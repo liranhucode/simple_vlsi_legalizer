@@ -1,2 +1,2 @@
 # simple_vlsi_legalizer
-simple legalizer for vlsi standard cell.
+study project: simple legalizer for vlsi standard cell.
