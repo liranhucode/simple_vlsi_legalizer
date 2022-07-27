@@ -23,6 +23,7 @@ private:
     void updateFinialLocation();
     double disp(const Cell &cell, double new_x, double new_y);
     bool check_legal_placement();
+    double reportTotalDisp();
 
 private:
     DB &db_;

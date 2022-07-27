@@ -1,27 +1,5 @@
 #include "legal.h"
 
-void Legalizer::updateFinialLocation()
-{
-    /*
-    for (const auto &subrow_by_rowid : db_.GetSubRow())
-    {
-        for (const auto &subrow : subrow_by_rowid)
-        {
-            for (const auto &cluster : subrow.clusters)
-            {
-                for (const auto &cell : cluster.cells)
-                {
-                    int id = cell.id;
-                    db_.GetCells()[id].new_x *= 
-
-                }
-
-            }
-        }
-    }
-    */
-}
-
 void Legalizer::Run()
 {
     int num_movable_cell = db_.GetNumCell() - db_.GetNumFixedCell();
@@ -384,6 +362,7 @@ bool Legalizer::check_legal_placement()
 void Legalizer::Report()
 {
     int n = 0;
+    double total_disp = 0;
     for (int i = 0; i < db_.GetNumRow(); ++i)
     {
         for (auto & subrow : db_.GetSubRow()[i])
@@ -394,6 +373,7 @@ void Legalizer::Report()
                 {
                     if (legal_option.is_debug)
                     {
+                        total_disp = disp(cell, cell.new_x, cell.new_y);
                         std::cout << "[Final] #" << n++ << " cell name:" << std::setw(6) << cell.name << " ";
                         std::cout << " init_x:" << std::setw(8) << cell.init_x << " init_y:" << std::setw(8) << cell.init_y << " -> "
                                   << " new_x:" << std::setw(8) << cell.new_x << " new_y:" << std::setw(8) << cell.new_y << std::endl;
@@ -402,18 +382,63 @@ void Legalizer::Report()
             }
         }
     }
+    std::cout << "[Result] #" < < < < " total displacement :" << setw(6) << total_disp << " ";
+    std::cout << " avg displacement:" << std::setw(8) << total_disp / n << std::endl;
 
-/*
-    const std::vector<Cell> &cells = db_.GetCells();
-    for (int i = 0; i < db_.GetNumCell(); ++i)
-    {
-        if (legal_option.is_debug)
+    /*
+        const std::vector<Cell> &cells = db_.GetCells();
+        for (int i = 0; i < db_.GetNumCell(); ++i)
         {
-            std::cout << "#" << i << " cell name:" << std::setw(6) << cells[i].name << " ";
-            std::cout << " init_x:" << std::setw(8) << cells[i].init_x << " init_y:" << std::setw(8) << cells[i].init_y << " -> "
-                      << " new_x:" << std::setw(8) << cells[i].new_x << " new_y:" << std::setw(8) << cells[i].new_y << std::endl;
+            if (legal_option.is_debug)
+            {
+                std::cout << "#" << i << " cell name:" << std::setw(6) << cells[i].name << " ";
+                std::cout << " init_x:" << std::setw(8) << cells[i].init_x << " init_y:" << std::setw(8) << cells[i].init_y << " -> "
+                          << " new_x:" << std::setw(8) << cells[i].new_x << " new_y:" << std::setw(8) << cells[i].new_y << std::endl;
+            }
+        }
+        */
+}
+
+double Legalizer::reportTotalDisp()
+{
+    double total_disp = 0;
+    for (int i = 0; i < db_.GetNumRow(); ++i)
+    {
+        for (auto & subrow : db_.GetSubRow()[i])
+        {
+            for (auto & cluster : subrow.clusters)
+            {
+                for (const auto &cell : cluster.cells)
+                {
+                    if (legal_option.is_debug)
+                    {
+                        total_disp = disp(cell, cell.new_x, cell.new_y);
+                    }
+                }
+            }
+        }
+    }
+    return total_disp;
+}
+
+void Legalizer::updateFinialLocation()
+{
+    /*
+    for (const auto &subrow_by_rowid : db_.GetSubRow())
+    {
+        for (const auto &subrow : subrow_by_rowid)
+        {
+            for (const auto &cluster : subrow.clusters)
+            {
+                for (const auto &cell : cluster.cells)
+                {
+                    int id = cell.id;
+                    db_.GetCells()[id].new_x *= 
+
+                }
+
+            }
         }
     }
     */
 }
-
