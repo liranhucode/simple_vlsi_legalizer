@@ -35,8 +35,8 @@ public:
     int height;
     double init_x;
     double init_y;
-    double new_x;
-    double new_y;
+    int new_x;
+    int new_y;
     std::string ori;
     bool is_fixed;
 };
@@ -76,7 +76,7 @@ public:
 class DB
 {
 public:
-    friend class Legalizer;
+    //friend class Legalizer;
 
     DB(std::string &filename) {
         Parser(filename);

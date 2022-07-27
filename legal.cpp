@@ -146,24 +146,26 @@ void Legalizer::Run()
 
 void Legalizer::placeRow(SubRow &subrow)
 {
+    int site_width = db_.GetSiteWidth();
+    int site_height = db_.GetSiteHeight();
     if (subrow.clusters.empty())
     {
         Cluster new_c;
-        if (subrow.trial.init_x < subrow.x_coord) //left
+        if (subrow.trial.init_x < subrow.x_coord * site_width) //left
         {
             new_c.start_x = subrow.x_coord;
         }
-        else if (subrow.trial.init_x + subrow.trial.width   > subrow.x_coord + subrow.width ) //right
+        else if (ceil(subrow.trial.init_x / site_width) + subrow.trial.width   > subrow.x_coord + subrow.width ) //right
         {
-            new_c.start_x = subrow.x_coord + subrow.width  - subrow.trial.width ;
+            new_c.start_x = subrow.x_coord + subrow.width- subrow.trial.width;
         }
         else
         {
-            new_c.start_x = subrow.trial.init_x;
+            new_c.start_x = ceil(subrow.trial.init_x / site_width);
         }
 
-        subrow.trial.new_x = new_c.start_x;
-        subrow.trial.new_y = subrow.y_coord;
+        subrow.trial.new_x = new_c.start_x * site_width;
+        subrow.trial.new_y = subrow.y_coord * site_height;
         new_c.total_width = subrow.trial.width;
         new_c.total_cost = disp(subrow.trial, subrow.trial.new_x, subrow.trial.new_y);
 
@@ -176,7 +178,7 @@ void Legalizer::placeRow(SubRow &subrow)
         Cluster &last_c = subrow.clusters[last_index];
 
         //has overlap with last clsuter, placed in it
-        if (subrow.trial.new_x < last_c.start_x + last_c.total_width)
+        if (ceil(subrow.trial.init_x / site_width) < last_c.start_x + last_c.total_width)
         {
             last_c.cells.push_back(subrow.trial);
             //last_c.total_cost += disp(subrow.trial, last_c.start_x + last_c.total_width , subrow.y_coord);
@@ -186,20 +188,20 @@ void Legalizer::placeRow(SubRow &subrow)
         else
         {
             Cluster new_c;
-            if (subrow.trial.init_x < subrow.x_coord) //might be removed
+            if (floor(subrow.trial.init_x / site_width) < subrow.x_coord) //might be removed
             {
                 new_c.start_x = subrow.x_coord;
             }
-            else if (subrow.trial.init_x + subrow.trial.width > subrow.x_coord + subrow.width) //exceed right boundary
+            else if (ceil(subrow.trial.init_x / site_width) + subrow.trial.width > subrow.x_coord + subrow.width) //exceed right boundary
             {
                 new_c.start_x = subrow.x_coord + subrow.width - subrow.trial.width ;
             }
             else 
             {
-                new_c.start_x = subrow.trial.init_x;
+                new_c.start_x = floor(subrow.trial.init_x / site_width);
             }
-            subrow.trial.new_x = new_c.start_x;
-            subrow.trial.new_y = subrow.y_coord;
+            subrow.trial.new_x = new_c.start_x * site_width;
+            subrow.trial.new_y = subrow.y_coord * site_height;
             new_c.total_width = subrow.trial.width;
             new_c.total_cost = disp(subrow.trial, subrow.trial.new_x, subrow.trial.new_y);
 
@@ -256,6 +258,8 @@ double Legalizer::calculateSubRowDisp(const SubRow &subrow)
 
 void Legalizer::updateSubRowCostAndCellLocation(SubRow &subrow)
 {
+    int site_width = db_.GetSiteWidth();
+    int site_height = db_.GetSiteHeight();
     for (auto &cluster : subrow.clusters)
     {
         cluster.total_cost = 0.0;
@@ -263,13 +267,13 @@ void Legalizer::updateSubRowCostAndCellLocation(SubRow &subrow)
         for (int i = 0; i < cluster.cells.size(); ++i)
         {
 
-            cluster.cells[i].new_x = start_x;
-            cluster.cells[i].new_y = subrow.y_coord;
+            cluster.cells[i].new_x = start_x * site_width;
+            cluster.cells[i].new_y = subrow.y_coord * site_height;
             int id = cluster.cells[i].id;
-            db_.GetCells()[id].new_x = start_x;
-            db_.GetCells()[id].new_y = subrow.y_coord;
+            db_.GetCells()[id].new_x = start_x * site_width;
+            db_.GetCells()[id].new_y = subrow.y_coord * site_height;
             start_x += cluster.cells[i].width;
-            cluster.total_cost += disp(cluster.cells[i], start_x, subrow.y_coord);
+            cluster.total_cost += disp(cluster.cells[i], cluster.cells[i].new_x, cluster.cells[i].nex_y);
         }
     }
 }
@@ -332,6 +336,8 @@ double Legalizer::disp(const Cell &cell, double new_x, double new_y)
 
 bool Legalizer::check_legal_placement()
 {
+    int site_width = db_.GetSiteWidth();
+    int site_height = db_.GetSiteHeight();
     for (int i = 0; i < db_.GetNumRow(); ++i)
     {
         for (auto &subrow : db_.GetSubRow()[i])
@@ -345,7 +351,7 @@ bool Legalizer::check_legal_placement()
                         continue;
                     }
 
-                    if (fmod(cell.new_x - db_.GetOriginX(), db_.GetSiteWidth()) || fmod(cell.new_y - db_.GetOriginY(), db_.GetSiteHeight()))
+                    if (fmod(cell.new_x - db_.GetOriginX() * site_width , site_width) || fmod(cell.new_y - db_.GetOriginY() * site_height, site_height))
                     {
                         std::cout << "Cell has illegal location: " << cell.name << " " << cell.new_x << " " << cell.new_y << std::endl;
                         //return false;

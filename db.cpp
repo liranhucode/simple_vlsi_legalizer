@@ -57,25 +57,25 @@ void DB::CreateSubRow()
             int start_x = rows_[i].x_coord;
             for (int j = 0; j < rows_[i].fixed_cells.size(); ++j)
             {
-                if (rows_[i].fixed_cells[j].init_x == start_x) 
+                if (rows_[i].fixed_cells[j].init_x == start_x * site_width_) 
                 {
-                    start_x = rows_[i].fixed_cells[j].init_x + rows_[i].fixed_cells[j].width;
+                    start_x = ceil(rows_[i].fixed_cells[j].init_x / site_width_) + rows_[i].fixed_cells[j].width;
                 }
                 else 
                 {
                     SubRow row;
                     row.x_coord = start_x;
                     row.y_coord = rows_[i].y_coord;
-                    row.width = rows_[i].fixed_cells[j].init_x  - start_x;
+                    row.width = floor(rows_[i].fixed_cells[j].init_x / site_width_) - start_x;
                     subrows_[i].push_back(row);
                 }
             }
 
             unsigned last = rows_[i].fixed_cells.size() - 1;
-            if (rows_[i].fixed_cells[last].init_x + rows_[i].fixed_cells[last].width < rows_[i].x_coord + rows_[i].width)
+            if (ceil(rows_[i].fixed_cells[last].init_x / site_width_) + rows_[i].fixed_cells[last].width < rows_[i].x_coord + rows_[i].width)
             {
                 SubRow row;
-                row.x_coord = rows_[i].fixed_cells[last].init_x + rows_[i].fixed_cells[last].width;
+                row.x_coord = ceil(rows_[i].fixed_cells[last].init_x / site_width_) + rows_[i].fixed_cells[last].width;
                 row.y_coord = rows_[i].y_coord;
                 row.width =  rows_[i].x_coord + rows_[i].width - row.x_coord;
                 subrows_[i].push_back(row);

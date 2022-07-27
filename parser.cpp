@@ -38,88 +38,6 @@ void DB::Parser(std::string &file_name)
     ParserCellFile(cell_file);
 }
 
-void DB::ParserCellFile(std::string &file_name)
-{
-    std::ifstream fin;
-    //fin.open(file_name, std::ios::in);
-    fin.open(file_name.c_str());
-    if (!fin.is_open())
-    {
-        std::cerr << "cannot open the file " << file_name << std::endl;
-        exit(1);
-    }
-    std::string buff;
-    std::string tmp;
-    std::string name = "";
-    double x = 0, y = 0;
-    std::string ori = "";
-    bool isCellLine = false;
-    int n = 0;
-    int i = 0;
-    while (getline(fin, buff))
-    {
-        if (buff.empty() || (n = buff.find('#')) != std::string::npos || 
-            (n = buff.find("UCLA")) != std::string::npos)
-        {
-            continue;
-        } 
-
-        if (n = buff.find("NumNodes") != std::string::npos)
-        {
-            std::stringstream word(buff);
-            word >> buff >> buff >> num_cell_;
-        }
-        else if (n = buff.find("NumTerminals") != std::string::npos)
-        {
-            std::stringstream word(buff);
-            word >> buff >> buff >> num_fixed_cell_;
-        }
-        else 
-        {
-            std::stringstream word(buff);
-            word >> tmp >> cells_[i].width >> cells_[i].height;
-            if (i >= num_cell_ - num_fixed_cell_)
-            {
-                cells_[i].is_fixed = true;
-            }
-            i++;
-        }
-    }
-}
-
-void DB::ParserLocationFile(std::string &file_name)
-{
-    std::ifstream fin;
-    //fin.open(file_name, std::ios::in);
-    fin.open(file_name.c_str());
-    if (!fin.is_open())
-    {
-        std::cerr << "cannot open the file " << file_name << std::endl;
-        exit(1);
-    }
-    std::string buff;
-    std::string tmp;
-    int i = 0;
-    std::string name = "";
-    double x = 0, y = 0;
-    std::string ori = "";
-    int n = 0;
-    while (getline(fin, buff))
-	{
-        if (buff.empty() || (n = buff.find('#')) != std::string::npos || 
-            (n = buff.find("UCLA")) != std::string::npos)
-        {
-            continue;
-        } 
-        //std::cout << buff << std::endl;
-        std::stringstream word;
-        word << buff;
-        word >> name >> x >> y >> tmp >> ori;
-        Cell cell(name, i, x, y, ori);
-        cells_.push_back(cell);
-        i++;
-    }
-}
 
 void DB::ParserSCLFile(std::string &file_name)
 {
@@ -174,6 +92,7 @@ void DB::ParserSCLFile(std::string &file_name)
             {
                 std::stringstream word(buff);
                 word >> tmp >> tmp >> site_width_;
+                rows_[i].x_coord /= site_height_;
             }
             else if (n = buff.find("Sitespacing") != std::string::npos)
             {
@@ -191,7 +110,7 @@ void DB::ParserSCLFile(std::string &file_name)
             {
                 std::stringstream word(buff);
                 word >> tmp >> tmp >> rows_[i].x_coord >> tmp >> tmp >> rows_[i].width;
-                rows_[i].width *= site_width_;
+                rows_[i].x_coord /= site_width_;
             }
             else if (n = buff.find("End") != std::string::npos)
             {
@@ -209,5 +128,90 @@ void DB::ParserSCLFile(std::string &file_name)
     {
         origin_y_ = rows_[0].y_coord;
         origin_x_ = rows_[0].x_coord;
+    }
+}
+
+
+void DB::ParserCellFile(std::string &file_name)
+{
+    std::ifstream fin;
+    //fin.open(file_name, std::ios::in);
+    fin.open(file_name.c_str());
+    if (!fin.is_open())
+    {
+        std::cerr << "cannot open the file " << file_name << std::endl;
+        exit(1);
+    }
+    std::string buff;
+    std::string tmp;
+    std::string name = "";
+    double x = 0, y = 0;
+    std::string ori = "";
+    bool isCellLine = false;
+    int n = 0;
+    int i = 0;
+    while (getline(fin, buff))
+    {
+        if (buff.empty() || (n = buff.find('#')) != std::string::npos || 
+            (n = buff.find("UCLA")) != std::string::npos)
+        {
+            continue;
+        } 
+
+        if (n = buff.find("NumNodes") != std::string::npos)
+        {
+            std::stringstream word(buff);
+            word >> buff >> buff >> num_cell_;
+        }
+        else if (n = buff.find("NumTerminals") != std::string::npos)
+        {
+            std::stringstream word(buff);
+            word >> buff >> buff >> num_fixed_cell_;
+        }
+        else 
+        {
+            std::stringstream word(buff);
+            word >> tmp >> cells_[i].width >> cells_[i].height;
+            cells_[i].width /= site_width_;
+            if (i >= num_cell_ - num_fixed_cell_)
+            {
+                cells_[i].is_fixed = true;
+            }
+            i++;
+        }
+    }
+}
+
+void DB::ParserLocationFile(std::string &file_name)
+{
+    std::ifstream fin;
+    //fin.open(file_name, std::ios::in);
+    fin.open(file_name.c_str());
+    if (!fin.is_open())
+    {
+        std::cerr << "cannot open the file " << file_name << std::endl;
+        exit(1);
+    }
+    std::string buff;
+    std::string tmp;
+    int i = 0;
+    std::string name = "";
+    double x = 0, y = 0;
+    std::string ori = "";
+    int n = 0;
+    while (getline(fin, buff))
+	{
+        if (buff.empty() || (n = buff.find('#')) != std::string::npos || 
+            (n = buff.find("UCLA")) != std::string::npos)
+        {
+            continue;
+        } 
+        //std::cout << buff << std::endl;
+        std::stringstream word;
+        word << buff;
+        word >> name >> x >> y >> tmp >> ori;
+        Cell cell(name, i, x, y, ori);
+        cells_.push_back(cell);
+        i++;
     }
 }
