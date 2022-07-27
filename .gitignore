@@ -2,4 +2,4 @@ legalizer
 *.swp
 .*
 testcase
-vscode
+.vscode
