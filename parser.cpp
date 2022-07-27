@@ -92,7 +92,6 @@ void DB::ParserSCLFile(std::string &file_name)
             {
                 std::stringstream word(buff);
                 word >> tmp >> tmp >> site_width_;
-                rows_[i].x_coord /= site_height_;
             }
             else if (n = buff.find("Sitespacing") != std::string::npos)
             {
@@ -110,7 +109,6 @@ void DB::ParserSCLFile(std::string &file_name)
             {
                 std::stringstream word(buff);
                 word >> tmp >> tmp >> rows_[i].x_coord >> tmp >> tmp >> rows_[i].width;
-                rows_[i].x_coord /= site_width_;
             }
             else if (n = buff.find("End") != std::string::npos)
             {
@@ -126,9 +124,17 @@ void DB::ParserSCLFile(std::string &file_name)
 
     if (!rows_.empty())
     {
-        origin_y_ = rows_[0].y_coord;
         origin_x_ = rows_[0].x_coord;
+        origin_y_ = rows_[0].y_coord;
     }
+
+    for (int i = 0; i < num_row_; ++i)
+    {
+        rows_[i].x_coord = (rows_[i].x_coord - origin_x_) / site_width_;
+        rows_[i].y_coord = (rows_[i].y_coord - origin_y_) / site_height_;
+        //rows_[i].width = site_width_;
+    }
+
 }
 
 
@@ -173,6 +179,7 @@ void DB::ParserCellFile(std::string &file_name)
             std::stringstream word(buff);
             word >> tmp >> cells_[i].width >> cells_[i].height;
             cells_[i].width /= site_width_;
+            cells_[i].height /= site_height_;
             if (i >= num_cell_ - num_fixed_cell_)
             {
                 cells_[i].is_fixed = true;
@@ -210,7 +217,7 @@ void DB::ParserLocationFile(std::string &file_name)
         std::stringstream word;
         word << buff;
         word >> name >> x >> y >> tmp >> ori;
-        Cell cell(name, i, x, y, ori);
+        Cell cell(name, i, x - origin_x_, y - origin_y_, ori);
         cells_.push_back(cell);
         i++;
     }

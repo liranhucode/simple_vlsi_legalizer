@@ -18,13 +18,14 @@ void DB::InitFixedCellToRow()
         {
             n++;
             int start_y = floor(cell.init_y / site_height_);
-            int end_y = ceil((cell.init_y + cell.height) / site_height_);
+            int end_y = start_y + cell.height;
             end_y = std::min(end_y, num_row_);
             if (legal_option.is_debug)
             {
-                std::cout << "Fixed cell: " << cell.name << " ";
-                std::cout << "coord:" << cell.init_x << " " << cell.init_y << " width: " << cell.width << " height: " << cell.height << " ";
-                std::cout << "assinged to row: " << start_y << " -> " << end_y << std::endl;
+                std::cout << "[Fixed] cell: " << std::setw(6) << cell.name << " ";
+                std::cout << "coord:" <<  std::setw(8) << cell.init_x << " " <<std::setw(8) << cell.init_y ;
+                std::cout  << " width: " << std::setw(6) << cell.width << " height: " << std::setw(6) << cell.height << " ";
+                std::cout << "assinged to row: " << std::setw(6) <<  start_y << " -> " << std::setw(6) << end_y << std::endl;
             }
             for (int r = start_y; r < end_y; ++r) 
             {

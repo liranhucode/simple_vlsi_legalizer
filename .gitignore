@@ -1,0 +1,4 @@
+*.log
+legalizer
+*.swp
+build/
