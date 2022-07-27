@@ -16,9 +16,20 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 file(GLOB SRC_FILES *.cpp)
 
+<<<<<<< HEAD
 find_package (Boost 1.55.0 REQUIRED COMPONENTS system filesystem)
 if (Boost_FOUND)
   include_directories (SYSTEM ${Boost_INCLUDE_DIR})
+=======
+#find boost lib
+find_package (Boost 1.55.0 REQUIRED COMPONENTS system filesystem)
+if (Boost_FOUND)
+    message(STATUS "Boost_DIR = ${Boost_DIR}")
+    message(STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}")
+    message(STATUS "Boost_LIBS = ${Boost_LIBS}")
+    message(STATUS "Boost_LIBS = ${Boost_LIBRARIES}")
+    include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
+>>>>>>> dd17476 (add cmake file)
 endif ()
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
