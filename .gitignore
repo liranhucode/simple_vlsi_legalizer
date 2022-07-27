@@ -2,3 +2,4 @@ legalizer
 *.swp
 build/
 .*
+testcase

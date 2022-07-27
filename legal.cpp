@@ -6,6 +6,7 @@ void Legalizer::Run()
     int num_row = db_.GetNumRow();
     std::vector<Cell> cells;
     cells.reserve(num_movable_cell);
+
     std::vector<Cell> &db_cells = db_.GetCells();
     for (auto &cell : db_cells)
     {
